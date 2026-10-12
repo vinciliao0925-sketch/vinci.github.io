@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- ✏️ 改這裡：網頁標題與搜尋引擎顯示的簡介 -->
+  <title>你的名字｜個人作品集</title>
+  <meta name="description" content="你的名字的個人作品集，收錄設計與開發專案。">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <a class="skip" href="#works">跳到作品</a>
+
+  <!-- ===== 頂部導覽 ===== -->
+  <header class="site-header">
+    <a class="logo" href="#top">你的名字</a>
+    <nav class="nav" id="nav" aria-label="主選單">
+      <a href="#works">作品</a>
+      <a href="#about">關於我</a>
+      <a href="#contact">聯絡</a>
+    </nav>
+    <div class="header-tools">
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="切換深色／淺色模式">◐</button>
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="開啟選單" aria-expanded="false" aria-controls="nav">☰</button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===== 首頁大標 ===== -->
+    <section class="hero">
+      <!-- ✏️ 改這裡：你的名字、職稱與一句話介紹 -->
+      <h1 class="hero-name">你的名字</h1>
+      <p class="hero-role">網頁設計師・前端開發新手</p>
+      <p class="hero-intro">我喜歡把想法做成看得見、點得到的東西。這裡收錄了我做過的專案，歡迎逛逛。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#works">看我的作品</a>
+        <a class="btn" href="#contact">聯絡我</a>
+      </div>
+    </section>
+
+    <!-- ===== 作品 ===== -->
+    <section class="section" id="works">
+      <h2>作品</h2>
+
+      <!-- 分類篩選：data-filter 要和下面作品的 data-category 對應 -->
+      <div class="filters" role="group" aria-label="作品分類">
+        <button class="chip is-active" type="button" data-filter="all">全部</button>
+        <button class="chip" type="button" data-filter="web">網頁</button>
+        <button class="chip" type="button" data-filter="design">視覺設計</button>
+        <button class="chip" type="button" data-filter="other">其他</button>
+      </div>
+
+      <div class="works" id="worksList">
+
+        <!-- ✏️ 每個作品就是一個 <details> 區塊。要新增作品，複製整段貼在下面再修改即可 -->
+        <details class="work" data-category="web">
+          <summary>
+            <span class="work-title">作品名稱一</span>
+            <span class="work-meta">網頁 ／ 2026</span>
+          </summary>
+          <div class="work-body">
+            <p>用兩三句話說明這個作品：做了什麼、為什麼做、你負責哪個部分。</p>
+            <p class="work-tags">HTML、CSS、JavaScript</p>
+            <p class="work-links">
+              <a href="#" target="_blank" rel="noopener">線上看</a>
+              <a href="#" target="_blank" rel="noopener">原始碼</a>
+            </p>
+          </div>
+        </details>
+
+        <details class="work" data-category="design">
+          <summary>
+            <span class="work-title">作品名稱二</span>
+            <span class="work-meta">視覺設計 ／ 2026</span>
+          </summary>
+          <div class="work-body">
+            <p>這裡可以放海報、Logo 或插畫等作品的說明。</p>
+            <p class="work-tags">Figma、Illustrator</p>
+            <p class="work-links">
+              <a href="#" target="_blank" rel="noopener">查看作品</a>
+            </p>
+          </div>
+        </details>
+
+        <details class="work" data-category="web">
+          <summary>
+            <span class="work-title">作品名稱三</span>
+            <span class="work-meta">網頁 ／ 2025</span>
+          </summary>
+          <div class="work-body">
+            <p>學習過程中的練習作品也很值得放上來，面試官會看到你的成長。</p>
+            <p class="work-tags">HTML、CSS</p>
+            <p class="work-links">
+              <a href="#" target="_blank" rel="noopener">線上看</a>
+            </p>
+          </div>
+        </details>
+
+        <details class="work" data-category="other">
+          <summary>
+            <span class="work-title">作品名稱四</span>
+            <span class="work-meta">其他 ／ 2025</span>
+          </summary>
+          <div class="work-body">
+            <p>攝影、文章、專題報告等，都可以放在這個分類。</p>
+            <p class="work-tags">企劃、寫作</p>
+          </div>
+        </details>
+
+      </div>
+      <p class="empty" id="emptyMsg" hidden>這個分類還沒有作品。</p>
+    </section>
+
+    <!-- ===== 關於我 ===== -->
+    <section class="section" id="about">
+      <h2>關於我</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <!-- ✏️ 改這裡：自我介紹 -->
+          <p>你好，我是你的名字，目前在（學校／公司）學習（科系／職務）。我對（領域）特別有興趣，正在學習網頁設計，希望把學到的東西做成有用的作品。</p>
+          <p>空閒時我喜歡（興趣一）和（興趣二）。</p>
+        </div>
+        <div class="about-skills">
+          <h3>會的工具</h3>
+          <ul class="skills">
+            <li>HTML／CSS</li>
+            <li>JavaScript（入門）</li>
+            <li>Git／GitHub</li>
+            <li>Figma</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 聯絡 ===== -->
+    <section class="section" id="contact">
+      <h2>聯絡</h2>
+      <p class="contact-lead">有合作想法或想聊聊，寄信給我最快。</p>
+      <!-- ✏️ 改這裡：你的 Email 與社群連結 -->
+      <a class="mail" href="mailto:your@email.com">your@email.com</a>
+      <ul class="social">
+        <li><a href="https://github.com/你的帳號" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://www.instagram.com/你的帳號" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="https://www.linkedin.com/in/你的帳號" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year">2026</span> 你的名字</p>
+    <a href="#top">回到頂端</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
