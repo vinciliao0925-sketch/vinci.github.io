@@ -4,7 +4,7 @@
 :root {
   --bg: #f3f5f7;        /* 背景 */
   --ink: #14213d;       /* 主要文字 */
-  --muted: #5b667a;     /* 次要文字 */
+  --muted: #3f4b63;     /* 次要文字 */
   --line: #d5dbe4;      /* 分隔線 */
   --accent: #2f5bea;    /* 重點色（按鈕、連結） */
   --accent-ink: #ffffff;/* 重點色上的文字 */
@@ -16,7 +16,7 @@
 
 /* 深色模式：由 JS 在 <html> 加上 data-theme="dark" */
 :root[data-theme="dark"] {
-  --bg: #0f1626;
+  --bg: #070b16;
   --ink: #e8ecf4;
   --muted: #9aa6bd;
   --line: #28324a;
@@ -30,13 +30,14 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
+  background: var(--bg);
   scroll-behavior: smooth;
   scroll-padding-top: 80px; /* 避免被固定導覽列蓋住 */
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: transparent; /* 讓後面的 .bg 背景層透出來 */
   color: var(--ink);
   font-family: var(--sans);
   font-size: 1.0625rem;
@@ -65,6 +66,36 @@ a { color: var(--accent); text-underline-offset: 0.2em; }
   z-index: 100;
 }
 .skip:focus { left: 0; }
+
+/* =========================================================
+   背景效果
+   ========================================================= */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  /* 淺色模式：天空藍 → 米白。圖片高度是畫面的 3 倍，
+     JS 會依照捲動進度改變 --scroll (0～1)，讓漸層跟著上下移動 */
+  background: linear-gradient(
+    180deg,
+    #5fb8ee 0%,      /* 天空藍 */
+    #a9dcf7 30%,     /* 淺藍 */
+    #f6f1e3 65%,     /* 米白 */
+    #fbf7ec 100%
+  );
+  background-size: 100% 300%;
+  background-position-y: calc(var(--scroll, 0) * 100%);
+}
+
+#stars { display: none; width: 100%; height: 100%; }
+
+/* 深色模式：深藍夜空 + 星星 */
+:root[data-theme="dark"] .bg {
+  background: radial-gradient(ellipse at 50% 0%, #131c3a 0%, #070b16 70%);
+}
+:root[data-theme="dark"] #stars { display: block; }
 
 /* =========================================================
    導覽列
@@ -141,7 +172,7 @@ main, .site-footer {
 .hero-name {
   font-family: var(--serif);
   font-weight: 900;
-  font-size: clamp(3.5rem, 15vw, 9rem);
+  font-size: clamp(2.1rem, 9vw, 5.4rem);
   line-height: 1.05;
   letter-spacing: -0.02em;
   margin-bottom: 1.25rem;
@@ -300,4 +331,31 @@ main, .site-footer {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .hero-name { animation: none; }
+}
+
+/* =========================================================
+   滑鼠微光 ✦
+   ========================================================= */
+:root { --sparkle: #f7e7a1; --sparkle-glow: #e8c14f; }            /* 淺色模式：米黃色 */
+:root[data-theme="dark"] { --sparkle: #cfe0ff; --sparkle-glow: #cfe0ff; } /* 深色模式：淡藍白色 */
+
+.sparkle {
+  position: fixed;
+  z-index: 90;
+  pointer-events: none;
+  color: var(--sparkle);
+  line-height: 1;
+  text-shadow: 0 0 9px var(--sparkle-glow), 0 0 21px var(--sparkle-glow); /* 微光 */
+  transform: translate(-50%, -50%);
+  animation: sparkle-fade 0.9s ease-out forwards;
+}
+
+@keyframes sparkle-fade {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  to   { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.2) rotate(90deg); }
+}
+
+/* 觸控螢幕沒有游標，或使用者想減少動態效果時，不顯示 */
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .sparkle { display: none; }
 }
