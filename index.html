@@ -4,15 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- ✏️ 改這裡：網頁標題與搜尋引擎顯示的簡介 -->
-  <title>Vinci Liao｜Portofolio</title>
-  <meta name="description" content="Vinci Liao 的 Portofolio，收錄設計與開發專案。">
+  <title>Vinci Liao｜Portfolio</title>
+  <meta name="description" content="Vinci Liao 的 Portfolio，收錄設計與開發專案。">
 
+  <script>
+    /* 提早套用主題，避免畫面閃一下；並標記 JS 可用（雲朵轉場只在有 JS 時顯示） */
+    (function () {
+      var r = document.documentElement;
+      r.classList.add("js");
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "dark" || (!t && matchMedia("(prefers-color-scheme: dark)").matches)) {
+          r.setAttribute("data-theme", "dark");
+        }
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- 雲朵轉場：進站與切換模式時，兩片雲從中間往左右散開 -->
+  <div class="clouds" id="clouds" aria-hidden="true">
+    <div class="cloud cloud-left">
+      <div class="cloud-body"></div>
+      <svg class="cloud-edge" viewBox="0 0 100 1000" preserveAspectRatio="none"><rect class="f" x="0" y="0" width="60" height="1000"/><circle class="f" cx="60" cy="40" r="40"/><circle class="f" cx="70" cy="130" r="30"/><circle class="f" cx="55" cy="230" r="45"/><circle class="f" cx="72" cy="330" r="28"/><circle class="f" cx="58" cy="430" r="42"/><circle class="f" cx="70" cy="530" r="30"/><circle class="f" cx="55" cy="640" r="45"/><circle class="f" cx="72" cy="740" r="28"/><circle class="f" cx="60" cy="840" r="40"/><circle class="f" cx="70" cy="935" r="30"/></svg>
+    </div>
+    <div class="cloud cloud-right">
+      <svg class="cloud-edge" viewBox="0 0 100 1000" preserveAspectRatio="none"><rect class="f" x="0" y="0" width="60" height="1000"/><circle class="f" cx="60" cy="40" r="40"/><circle class="f" cx="70" cy="130" r="30"/><circle class="f" cx="55" cy="230" r="45"/><circle class="f" cx="72" cy="330" r="28"/><circle class="f" cx="58" cy="430" r="42"/><circle class="f" cx="70" cy="530" r="30"/><circle class="f" cx="55" cy="640" r="45"/><circle class="f" cx="72" cy="740" r="28"/><circle class="f" cx="60" cy="840" r="40"/><circle class="f" cx="70" cy="935" r="30"/></svg>
+      <div class="cloud-body"></div>
+    </div>
+  </div>
 
   <!-- 背景層：淺色模式是天空漸層，深色模式是閃爍星空 -->
   <div class="bg" aria-hidden="true">
@@ -23,7 +48,7 @@
 
   <!-- ===== 頂部導覽 ===== -->
   <header class="site-header">
-    <a class="logo" href="#top">Vinci Liao</a>
+    <a class="logo" href="#top">Vinci's Portfolio</a>
     <nav class="nav" id="nav" aria-label="主選單">
       <a href="#works">作品</a>
       <a href="#about">關於我</a>
@@ -39,13 +64,29 @@
 
     <!-- ===== 首頁大標 ===== -->
     <section class="hero">
-      <!-- ✏️ 改這裡：職稱與一句話介紹 -->
-      <h1 class="hero-name">Vinci Liao</h1>
-      <p class="hero-role">網頁設計師・前端開發新手</p>
-      <p class="hero-intro">我喜歡把想法做成看得見、點得到的東西。這裡收錄了我做過的專案，歡迎逛逛。</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#works">看我的作品</a>
-        <a class="btn" href="#contact">聯絡我</a>
+      <div class="hero-text">
+        <!-- ✏️ 改這裡：職稱與一句話介紹 -->
+        <h1 class="hero-name">
+          <span class="hero-hello">Hello, my name is</span>
+          <span class="hero-fullname">Vinci Liao<span class="hero-dot">.</span></span>
+        </h1>
+        <p class="hero-role">網頁設計師・前端開發新手</p>
+        <p class="hero-intro">我喜歡把想法做成<mark class="hl">看得見、點得到</mark>的東西。這裡收錄了我做過的專案，歡迎逛逛。</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#works">看我的作品</a>
+          <a class="btn" href="#contact">聯絡我</a>
+        </div>
+      </div>
+
+      <!-- ✏️ 照片：把你的照片命名為 photo.jpg，放進 images 資料夾即可。
+           找不到照片時，會自動顯示 VL 佔位圖 -->
+      <div class="hero-photo">
+        <span class="glow glow-sun" aria-hidden="true"></span>
+        <span class="glow glow-moon" aria-hidden="true"></span>
+        <div class="hero-photo-frame">
+          <span class="hero-photo-fallback" aria-hidden="true">VL</span>
+          <img src="images/photo.jpg" alt="Vinci Liao 的照片" width="400" height="400" onerror="this.remove()">
+        </div>
       </div>
     </section>
 
@@ -53,72 +94,10 @@
     <section class="section" id="works">
       <h2>作品</h2>
 
-      <!-- 分類篩選：data-filter 要和下面作品的 data-category 對應 -->
-      <div class="filters" role="group" aria-label="作品分類">
-        <button class="chip is-active" type="button" data-filter="all">全部</button>
-        <button class="chip" type="button" data-filter="web">網頁</button>
-        <button class="chip" type="button" data-filter="design">視覺設計</button>
-        <button class="chip" type="button" data-filter="other">其他</button>
-      </div>
+      <!-- 分類按鈕與作品列表由 script.js 依照 works.js 的資料自動產生 -->
+      <div class="filters" id="filters" role="group" aria-label="作品分類"></div>
 
-      <div class="works" id="worksList">
-
-        <!-- ✏️ 每個作品就是一個 <details> 區塊。要新增作品，複製整段貼在下面再修改即可 -->
-        <details class="work" data-category="web">
-          <summary>
-            <span class="work-title">作品名稱一</span>
-            <span class="work-meta">網頁 ／ 2026</span>
-          </summary>
-          <div class="work-body">
-            <p>用兩三句話說明這個作品：做了什麼、為什麼做、你負責哪個部分。</p>
-            <p class="work-tags">HTML、CSS、JavaScript</p>
-            <p class="work-links">
-              <a href="#" target="_blank" rel="noopener">線上看</a>
-              <a href="#" target="_blank" rel="noopener">原始碼</a>
-            </p>
-          </div>
-        </details>
-
-        <details class="work" data-category="design">
-          <summary>
-            <span class="work-title">作品名稱二</span>
-            <span class="work-meta">視覺設計 ／ 2026</span>
-          </summary>
-          <div class="work-body">
-            <p>這裡可以放海報、Logo 或插畫等作品的說明。</p>
-            <p class="work-tags">Figma、Illustrator</p>
-            <p class="work-links">
-              <a href="#" target="_blank" rel="noopener">查看作品</a>
-            </p>
-          </div>
-        </details>
-
-        <details class="work" data-category="web">
-          <summary>
-            <span class="work-title">作品名稱三</span>
-            <span class="work-meta">網頁 ／ 2025</span>
-          </summary>
-          <div class="work-body">
-            <p>學習過程中的練習作品也很值得放上來，面試官會看到你的成長。</p>
-            <p class="work-tags">HTML、CSS</p>
-            <p class="work-links">
-              <a href="#" target="_blank" rel="noopener">線上看</a>
-            </p>
-          </div>
-        </details>
-
-        <details class="work" data-category="other">
-          <summary>
-            <span class="work-title">作品名稱四</span>
-            <span class="work-meta">其他 ／ 2025</span>
-          </summary>
-          <div class="work-body">
-            <p>攝影、文章、專題報告等，都可以放在這個分類。</p>
-            <p class="work-tags">企劃、寫作</p>
-          </div>
-        </details>
-
-      </div>
+      <div class="works" id="worksList"></div>
       <p class="empty" id="emptyMsg" hidden>這個分類還沒有作品。</p>
     </section>
 
@@ -128,7 +107,7 @@
       <div class="about-grid">
         <div class="about-text">
           <!-- ✏️ 改這裡：自我介紹 -->
-          <p>你好，我是 Vinci Liao，目前在（學校／公司）學習（科系／職務）。我對（領域）特別有興趣，正在學習網頁設計，希望把學到的東西做成有用的作品。</p>
+          <p>你好，我是 Vinci Liao，目前在（學校／公司）學習（科系／職務）。我對（領域）特別有興趣，正在學習<mark class="hl">網頁設計</mark>，希望把學到的東西做成<mark class="hl">有用的作品</mark>。</p>
           <p>空閒時我喜歡（興趣一）和（興趣二）。</p>
         </div>
         <div class="about-skills">
@@ -146,7 +125,7 @@
     <!-- ===== 聯絡 ===== -->
     <section class="section" id="contact">
       <h2>聯絡</h2>
-      <p class="contact-lead">有合作想法或想聊聊，寄信給我最快。</p>
+      <p class="contact-lead">有合作想法或想聊聊，<mark class="hl">寄信給我最快</mark>。</p>
       <!-- ✏️ 改這裡：你的 Email 與社群連結 -->
       <a class="mail" href="mailto:your@email.com">your@email.com</a>
       <ul class="social">
@@ -163,6 +142,7 @@
     <a href="#top">回到頂端</a>
   </footer>
 
+  <script src="works.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

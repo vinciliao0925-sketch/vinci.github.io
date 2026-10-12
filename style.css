@@ -38,6 +38,7 @@ html {
 body {
   margin: 0;
   background: transparent; /* 讓後面的 .bg 背景層透出來 */
+  overflow-x: clip;
   color: var(--ink);
   font-family: var(--sans);
   font-size: 1.0625rem;
@@ -167,7 +168,80 @@ main, .site-footer {
 /* =========================================================
    首頁大標（網站最醒目的地方）
    ========================================================= */
-.hero { padding: clamp(4rem, 12vw, 9rem) 0 1rem; }
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  padding: clamp(3.5rem, 10vw, 8rem) 0 1rem;
+}
+.hero-text { flex: 1 1 auto; min-width: 0; }
+
+/* 標題：Hello, my name is / Vinci Liao. */
+.hero-hello {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: clamp(1rem, 2.6vw, 1.5rem);
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+.hero-dot { color: var(--accent); }
+
+/* 首頁照片：圓形，背後有一圈模糊光暈（白天太陽、夜晚月亮） */
+.hero-photo {
+  position: relative;
+  flex: none;
+  width: clamp(130px, 24vw, 240px);
+  aspect-ratio: 1;
+}
+
+.glow {
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  filter: blur(clamp(18px, 3.5vw, 32px));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;            /* 切換模式時淡入淡出 */
+  animation: glow-breathe 6s ease-in-out infinite;
+}
+.glow-sun  { background: radial-gradient(circle, #fff6cf 0%, #ffd873 45%, #ffb94d 80%); }
+.glow-moon { background: radial-gradient(circle, #f4f8ff 0%, #c6d5ff 50%, #8fa8ff 85%); animation-duration: 8s; }
+
+:root:not([data-theme="dark"]) .glow-sun  { opacity: 0.95; }
+:root[data-theme="dark"]       .glow-moon { opacity: 0.6; }
+
+@keyframes glow-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+
+.hero-photo-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--bg) 85%, var(--ink) 15%);
+  border: 3px solid var(--ring);
+}
+.hero-photo-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-photo-fallback {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  color: var(--muted);
+}
 
 .hero-name {
   font-family: var(--serif);
@@ -176,7 +250,7 @@ main, .site-footer {
   line-height: 1.05;
   letter-spacing: -0.02em;
   margin-bottom: 1.25rem;
-  animation: rise 0.8s ease-out both; /* 全站唯一的進場動畫 */
+  animation: rise 0.8s ease-out 0.9s both; /* 全站唯一的進場動畫 */
 }
 
 .hero-role {
@@ -252,7 +326,68 @@ main, .site-footer {
 
 .work-meta { color: var(--muted); font-size: 0.95rem; white-space: nowrap; }
 
-.work-body { padding: 0 0 1.75rem; }
+/* 標題右邊的「＋」，展開時轉成「×」 */
+.work summary { position: relative; padding-right: 2.25rem; }
+.work-title { margin-right: auto; }
+.work summary::after {
+  content: "+";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
+  font-size: 1.75rem;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+.work[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+
+/* 展開後：左邊縮圖、右邊文字 */
+.work-body {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(1rem, 3vw, 2rem);
+  padding: 0 0 1.75rem;
+}
+.work-info { flex: 1; min-width: 0; }
+.work-info p:last-child { margin-bottom: 0; }
+
+.work-thumb {
+  flex: none;
+  width: clamp(104px, 26vw, 240px);
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  transition: transform 0.3s ease;
+}
+.work-thumb:hover { transform: rotate(-1.5deg) scale(1.03); }
+
+/* 沒有縮圖時的佔位色塊 */
+.work-thumb.is-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 20%, var(--bg)),
+    color-mix(in srgb, var(--accent) 6%, var(--bg))
+  );
+}
+
+/* 展開時縮圖從左邊滑入 */
+.work[open] .work-body  { animation: body-in 0.45s ease-out; }
+.work[open] .work-thumb { animation: thumb-in 0.6s cubic-bezier(0.2, 0.8, 0.3, 1); }
+@keyframes body-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes thumb-in {
+  from { opacity: 0; transform: translateX(-28px) scale(0.95); }
+  to   { opacity: 1; transform: none; }
+}
 .work-tags { color: var(--muted); font-size: 0.95rem; }
 .work-links { display: flex; gap: 1.25rem; font-weight: 500; }
 
@@ -323,6 +458,7 @@ main, .site-footer {
 
   .header-tools { margin-left: auto; }
 
+  .hero { flex-direction: column-reverse; align-items: flex-start; }
   .about-grid { grid-template-columns: 1fr; gap: 2rem; }
   .work summary { flex-direction: column; gap: 0.15rem; }
 }
@@ -330,7 +466,8 @@ main, .site-footer {
 /* 使用者設定「減少動態效果」時，關閉動畫 */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero-name { animation: none; }
+  .hero-name, .glow, .work[open] .work-body, .work[open] .work-thumb { animation: none; }
+  .clouds { display: none !important; }
 }
 
 /* =========================================================
@@ -359,3 +496,72 @@ main, .site-footer {
 @media (pointer: coarse), (prefers-reduced-motion: reduce) {
   .sparkle { display: none; }
 }
+
+/* =========================================================
+   重點螢光筆（HTML 裡用 <mark class="hl">重點</mark>）
+   ========================================================= */
+:root { --hl: #ffe38a; --ring: #fff6dc; }                          /* 白天：暖米黃，和太陽、游標微光同一組 */
+:root[data-theme="dark"] { --hl: rgba(143, 168, 255, 0.4); --ring: rgba(207, 224, 255, 0.6); } /* 夜晚：月光藍，和月亮、星星同一組 */
+
+mark.hl {
+  color: var(--ink);
+  font-weight: 500;
+  padding: 0 0.2em;
+  margin: 0 -0.2em;
+  background: linear-gradient(transparent 38%, var(--hl) 38%, var(--hl) 92%, transparent 92%) no-repeat left;
+  background-size: 100% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 0.8s cubic-bezier(0.22, 0.8, 0.3, 1);
+}
+
+/* JS 啟動後，重點一開始是空的，捲動到畫面時才刷出 */
+.hl-ready mark.hl:not(.is-on) { background-size: 0% 100%; }
+
+/* =========================================================
+   雲朵轉場
+   ========================================================= */
+:root { --cloud: #ffffff; --cloud-shade: rgba(120, 170, 215, 0.3); }       /* 白天：白雲 */
+:root[data-theme="dark"] { --cloud: #1d2644; --cloud-shade: rgba(6, 10, 28, 0.55); } /* 夜晚：深藍夜雲 */
+
+.clouds {
+  --edge: clamp(70px, 9vw, 150px);   /* 雲朵邊緣「一坨一坨」的寬度 */
+  display: none;                     /* 沒有 JS 時不顯示，避免卡住畫面 */
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  overflow: hidden;
+  pointer-events: auto;              /* 雲蓋住時，擋住底下的點擊 */
+}
+.js .clouds { display: block; }
+
+.cloud {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  width: calc(50vw + var(--edge));
+  transition: transform 0.95s cubic-bezier(0.6, 0, 0.3, 1);   /* 合起來的速度 */
+  will-change: transform;
+}
+.cloud-left  { left: 0; }
+.cloud-right { right: 0; transition-delay: 0.08s; }
+
+.cloud-body {
+  flex: 1;
+  background-color: var(--cloud);
+  background-image:
+    radial-gradient(ellipse 45% 14% at 30% 22%, var(--cloud-shade), transparent 70%),
+    radial-gradient(ellipse 50% 16% at 65% 52%, var(--cloud-shade), transparent 70%),
+    radial-gradient(ellipse 40% 13% at 25% 82%, var(--cloud-shade), transparent 70%);
+  transition: background-color 0.5s ease;
+}
+.cloud-edge { flex: none; width: var(--edge); height: 100%; display: block; }
+.cloud-right .cloud-edge { transform: scaleX(-1); }
+.cloud-edge .f { fill: var(--cloud); transition: fill 0.5s ease; }
+
+/* 打開：兩片雲往左右移走 */
+.clouds.is-open { pointer-events: none; visibility: hidden; transition: visibility 0s linear 1.7s; }
+.clouds.is-open .cloud { transition-duration: 1.5s; }              /* 散開的速度 */
+.clouds.is-open .cloud-left  { transform: translateX(-102%); }
+.clouds.is-open .cloud-right { transform: translateX(102%); }

@@ -11,14 +11,53 @@ if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
   root.setAttribute("data-theme", "dark");
 }
 
-themeBtn.addEventListener("click", () => {
-  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+function applyTheme(next) {
   if (next === "dark") {
     root.setAttribute("data-theme", "dark");
   } else {
     root.removeAttribute("data-theme");
   }
   try { localStorage.setItem("theme", next); } catch (e) {}
+}
+
+// 雲朵轉場：進站時兩片雲從中間往左右散開；
+// 切換模式時，雲先合起來，蓋住畫面後才換主題，再散開
+const clouds = document.getElementById("clouds");
+const noMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const useClouds = Boolean(clouds) && !noMotion;
+let cloudsBusy = false;
+
+if (!useClouds) {
+  if (clouds) clouds.remove(); // 系統設定「減少動態效果」時，不播放
+} else {
+  cloudsBusy = true; // 開場動畫播放期間，先不接受切換
+  let introStarted = false;
+  const startIntro = () => {
+    if (introStarted) return;
+    introStarted = true;
+    clouds.classList.add("is-open");
+    setTimeout(() => { cloudsBusy = false; }, 1500);
+  };
+  if (document.readyState === "complete") setTimeout(startIntro, 350);
+  else window.addEventListener("load", () => setTimeout(startIntro, 350));
+  setTimeout(startIntro, 3000); // 保險：載入太慢時也會自動打開
+}
+
+themeBtn.addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+
+  if (!useClouds) { applyTheme(next); return; }
+  if (cloudsBusy) return;
+  cloudsBusy = true;
+
+  clouds.classList.remove("is-open");   // 1. 雲合起來（約 0.9 秒）
+  setTimeout(() => {
+    applyTheme(next);                   // 2. 畫面被蓋住時才換主題
+    setTimeout(() => {
+      clouds.classList.add("is-open");  // 3. 再散開
+      setTimeout(() => { cloudsBusy = false; }, 1500);
+    }, 500);
+  }, 950);
 });
 
 // ===== 2. 手機版選單 =====
@@ -38,28 +77,128 @@ nav.querySelectorAll("a").forEach((link) => {
   });
 });
 
-// ===== 3. 作品分類篩選 =====
-const chips = document.querySelectorAll(".chip");
-const works = document.querySelectorAll(".work");
+// ===== 3. 作品列表（資料來自 works.js）與分類篩選 =====
+const worksList = document.getElementById("worksList");
+const filtersBox = document.getElementById("filters");
 const emptyMsg = document.getElementById("emptyMsg");
 
-chips.forEach((chip) => {
-  chip.addEventListener("click", () => {
-    const filter = chip.dataset.filter;
+// 小工具：建立一個元素，可同時設定 class 與文字
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text) node.textContent = text;
+  return node;
+}
 
-    chips.forEach((c) => c.classList.remove("is-active"));
-    chip.classList.add("is-active");
+function categoryLabel(key) {
+  return CATEGORY_LABELS[key] || key;
+}
 
-    let visibleCount = 0;
-    works.forEach((work) => {
-      const show = filter === "all" || work.dataset.category === filter;
-      work.hidden = !show;
-      if (show) visibleCount++;
-    });
-
-    emptyMsg.hidden = visibleCount > 0;
+// 把 "一般文字 **重點** 一般文字" 轉成含螢光筆標記的段落
+function richText(text) {
+  const p = el("p");
+  text.split(/\*\*(.+?)\*\*/g).forEach((part, i) => {
+    if (i % 2 === 1) p.append(el("mark", "hl", part));
+    else if (part) p.append(document.createTextNode(part));
   });
+  return p;
+}
+
+// 作品縮圖：有 thumb 就顯示圖片，沒有（或圖片載入失敗）就顯示分類色塊
+function buildThumb(w) {
+  const placeholder = () => el("div", "work-thumb is-placeholder", categoryLabel(w.category));
+  const src = w.thumb || w.image;
+  if (!src) return placeholder();
+
+  const img = el("img", "work-thumb");
+  img.src = src;
+  img.alt = w.title + " 縮圖";
+  img.loading = "lazy";
+  img.addEventListener("error", () => img.replaceWith(placeholder()));
+  return img;
+}
+
+// 把一筆作品資料變成網頁上的一列
+function buildWork(w) {
+  const item = el("details", "work");
+  item.dataset.category = w.category;
+
+  const summary = el("summary");
+  summary.append(
+    el("span", "work-title", w.title),
+    el("span", "work-meta", categoryLabel(w.category) + (w.year ? " ／ " + w.year : ""))
+  );
+
+  // 展開後：左邊縮圖、右邊文字
+  const body = el("div", "work-body");
+  const info = el("div", "work-info");
+
+  if (w.description) info.append(richText(w.description));
+  if (w.tags) info.append(el("p", "work-tags", w.tags));
+
+  if (w.links && w.links.length) {
+    const links = el("p", "work-links");
+    w.links.forEach((l) => {
+      const a = el("a", null, l.label);
+      a.href = l.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      links.append(a);
+    });
+    info.append(links);
+  }
+
+  body.append(buildThumb(w), info);
+  item.append(summary, body);
+  return item;
+}
+
+// 依作品資料產生分類按鈕（只顯示有作品的分類）
+function buildFilters(list) {
+  const used = new Set(list.map((w) => w.category));
+  const ordered = Object.keys(CATEGORY_LABELS).filter((k) => used.has(k));
+  used.forEach((k) => { if (!ordered.includes(k)) ordered.push(k); });
+
+  const makeChip = (key, label, active) => {
+    const chip = el("button", "chip" + (active ? " is-active" : ""), label);
+    chip.type = "button";
+    chip.dataset.filter = key;
+    return chip;
+  };
+
+  filtersBox.append(makeChip("all", "全部", true));
+  ordered.forEach((k) => filtersBox.append(makeChip(k, categoryLabel(k), false)));
+}
+
+// 點分類按鈕時篩選
+filtersBox.addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip");
+  if (!chip) return;
+  const filter = chip.dataset.filter;
+
+  filtersBox.querySelectorAll(".chip").forEach((c) => c.classList.remove("is-active"));
+  chip.classList.add("is-active");
+
+  let visibleCount = 0;
+  worksList.querySelectorAll(".work").forEach((work) => {
+    const show = filter === "all" || work.dataset.category === filter;
+    work.hidden = !show;
+    if (show) visibleCount++;
+  });
+  emptyMsg.hidden = visibleCount > 0;
 });
+
+if (typeof WORKS !== "undefined" && Array.isArray(WORKS)) {
+  // 依年份由新到舊排序
+  [...WORKS]
+    .sort((a, b) => (b.year || 0) - (a.year || 0))
+    .forEach((w) => worksList.append(buildWork(w)));
+  buildFilters(WORKS);
+} else {
+  // works.js 沒載入成功時的提示
+  emptyMsg.textContent = "作品載入失敗，請確認 works.js 有一起上傳。";
+  emptyMsg.hidden = false;
+}
 
 // ===== 4. 頁尾年份自動更新 =====
 document.getElementById("year").textContent = new Date().getFullYear();
@@ -160,4 +299,30 @@ if (canHover && !reduceMotion) {
 
     star.addEventListener("animationend", () => star.remove());
   });
+}
+
+// ===== 7. 重點螢光筆：捲動到畫面時，標記由左到右刷過 =====
+const marks = document.querySelectorAll("mark.hl");
+
+if ("IntersectionObserver" in window && !reduceMotion && marks.length) {
+  document.body.classList.add("hl-ready"); // 啟用「先隱藏、再刷出」的效果
+
+  // 同一段落有多個重點時，依序刷出
+  marks.forEach((m) => {
+    const siblings = [...m.parentElement.querySelectorAll("mark.hl")];
+    m.style.transitionDelay = siblings.indexOf(m) * 0.25 + "s";
+  });
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-on");
+          io.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.6 }
+  );
+  marks.forEach((m) => io.observe(m));
 }
