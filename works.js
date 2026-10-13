@@ -35,7 +35,7 @@ const WORKS = [
     description:
       "擔任 NIKE 美國研發團隊、韓國製鞋廠與國內供應商之間的主要窗口，協調 10 人以上團隊。專案歷經 **至少 10 輪驗證與修正**，產品由 NBA 球員 AJ Dybantsa 於 2026 年華盛頓巫師隊媒體日公開亮相。",
     tags: "專案管理、跨國協作、敏捷開發、風險控管",
-    thumb: "images/nike-gt-flight-led.jpg",   // 想放縮圖，就把這行前面的 // 拿掉
+    thumb: "nike-gt-flight-led.jpg",   // 想放縮圖，就把這行前面的 // 拿掉
   },
   {
     title: "租賃大數據：台北租屋熱點研究",
@@ -44,7 +44,7 @@ const WORKS = [
     description:
       "以 Python 清洗 **約 300 萬筆租屋資料**（2019–2023，591 租屋網），處理缺漏值、格式不一致與異常資料，並用 Excel 與 GIS 建立視覺化資料集。與永慶房屋合作研究，協助與指導教授發布研究文章。",
     tags: "Python、Excel、GIS、資料清洗",
-    thumb: "images/02.png",   // 想放縮圖，就把這行前面的 // 拿掉
+    thumb: "02.png",   // 想放縮圖，就把這行前面的 // 拿掉
     links: [{ label: "閱讀研究文章", url: "https://rer.nccu.edu.tw/article/detail/2408149840425" }],
   },
   {
@@ -54,7 +54,7 @@ const WORKS = [
     description:
       "Unity 3D 心理解謎遊戲（畢業專題）。**6 人團隊**合作，歷時約一年從零開發至完成，並於松山文創園區舉辦展覽，展出遊戲、宣傳影片、立牌與創作理念。",
     tags: "Unity 3D、3D 建模、人機介面設計",
-    thumb: "images/01.png",   // 想放縮圖，就把這行前面的 // 拿掉
+    thumb: "01.png",   // 想放縮圖，就把這行前面的 // 拿掉
     links: [{ label: "查看專案", url: "https://www.youtube.com/watch?v=9B8fifANwms" }],
   },
 ];
