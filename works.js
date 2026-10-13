@@ -2,6 +2,8 @@
 // ✏️ 作品資料：以後新增或修改作品，只需要編輯這個檔案
 // =========================================================
 //
+// 下面三筆是依照你的履歷整理的「草稿」，請改成你想呈現的樣子。
+//
 // 新增作品的方法：
 //   1. 複製任何一個 { ... }, 區塊（包含最後的逗號）
 //   2. 貼在 WORKS 的 [ ] 裡面，改成你的內容
@@ -16,48 +18,43 @@
 //   - tags、links 也都可以不寫，不想用就整行刪掉
 //   - 想在說明文字裡加上「螢光筆重點」，把那段字用兩個星號包起來，
 //     例如："這個專案讓我學會 **版面設計** 的基本功。"
+//   - 公司專案放上網前，建議先確認內容可以公開
 
 // 分類名稱：左邊是代號（category 要填這個），右邊是網頁上顯示的文字
 const CATEGORY_LABELS = {
-  web: "網頁",
-  design: "視覺設計",
-  other: "其他",
+  pm: "專案管理",
+  data: "資料分析",
+  game: "遊戲開發",
 };
 
 const WORKS = [
   {
-    title: "作品名稱一",
-    category: "web",
+    title: "NIKE GT Flight LED",
+    category: "pm",
     year: 2026,
-    description: "用兩三句話說明這個作品：做了什麼、為什麼做、你負責 **哪個部分**。",
-    tags: "HTML、CSS、JavaScript",
-    // thumb: "images/work-01.jpg",   // 想放縮圖，就把這行前面的 // 拿掉
-    links: [
-      { label: "線上看", url: "#" },
-      { label: "原始碼", url: "#" },
-    ],
+    description:
+      "擔任 NIKE 美國研發團隊、韓國製鞋廠與國內供應商之間的主要窗口，協調 10 人以上團隊。專案歷經 **至少 10 輪驗證與修正**，產品由 NBA 球員 AJ Dybantsa 於 2026 年華盛頓巫師隊媒體日公開亮相。",
+    tags: "專案管理、跨國協作、敏捷開發、風險控管",
+    thumb: "images/nike-gt-flight-led.jpg",   // 想放縮圖，就把這行前面的 // 拿掉
   },
   {
-    title: "作品名稱二",
-    category: "design",
-    year: 2026,
-    description: "這裡可以放海報、Logo 或插畫等作品的說明。",
-    tags: "Figma、Illustrator",
-    links: [{ label: "查看作品", url: "#" }],
+    title: "租賃大數據：台北租屋熱點研究",
+    category: "data",
+    year: 2024,
+    description:
+      "以 Python 清洗 **約 300 萬筆租屋資料**（2019–2023，591 租屋網），處理缺漏值、格式不一致與異常資料，並用 Excel 與 GIS 建立視覺化資料集。與永慶房屋合作研究，協助與指導教授發布研究文章。",
+    tags: "Python、Excel、GIS、資料清洗",
+    thumb: "images/02.png",   // 想放縮圖，就把這行前面的 // 拿掉
+    links: [{ label: "閱讀研究文章", url: "https://rer.nccu.edu.tw/article/detail/2408149840425" }],
   },
   {
-    title: "作品名稱三",
-    category: "web",
-    year: 2025,
-    description: "學習過程中的練習作品也很值得放上來，面試官會看到你的 **成長**。",
-    tags: "HTML、CSS",
-    links: [{ label: "線上看", url: "#" }],
-  },
-  {
-    title: "作品名稱四",
-    category: "other",
-    year: 2025,
-    description: "攝影、文章、專題報告等，都可以放在這個分類。",
-    tags: "企劃、寫作",
+    title: "UnderWalkers",
+    category: "game",
+    year: 2024,
+    description:
+      "Unity 3D 心理解謎遊戲（畢業專題）。**6 人團隊**合作，歷時約一年從零開發至完成，並於松山文創園區舉辦展覽，展出遊戲、宣傳影片、立牌與創作理念。",
+    tags: "Unity 3D、3D 建模、人機介面設計",
+    thumb: "images/01.png",   // 想放縮圖，就把這行前面的 // 拿掉
+    links: [{ label: "查看專案", url: "https://www.youtube.com/watch?v=9B8fifANwms" }],
   },
 ];
